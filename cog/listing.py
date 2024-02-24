@@ -2,7 +2,7 @@ import discord, json, PIL, easy_pil, aiosqlite, os
 from other.request_data import *
 from discord import Option
 from discord.ext import commands
-from main import bot
+from bot import bot
 from PIL import Image
 from easy_pil import Editor, load_image_async, Font
 from other.listing_view import listingButtons
@@ -38,7 +38,7 @@ async def insert_in_db(price, uuid, channel_id, message_id, author_name, author_
 
 
 class listing(commands.Cog):
-    def __init__(self):
+    def __init__(self, bot):
         self.bot = bot
 
     @commands.has_permissions(administrator=True)
@@ -115,10 +115,10 @@ class listing(commands.Cog):
         embed.add_field(name=f"❗ Extra Stats:", value=f"{show_ign_embed}", inline=False)
         embed.add_field(name="Price & Payment Methods", value=f"{price} | {payment_methods}", inline=False)
         embed.set_thumbnail(url=f"attachment://{thumbnail.filename}")
-        sent_message = await list_channel.send(f"<@&{acc_ping_role}>", embed=embed, file=thumbnail, view=listingButtons(data["uuid"]))
+        sent_message = await list_channel.send(f"<@&{acc_ping_role}>", embed=embed, file=thumbnail, view=listingButtons(self.bot, data["uuid"]))
         await insert_in_db(price, data["uuid"], list_channel.id, sent_message.id, ctx.author.name, ctx.author.id, data)
         await ctx.edit(content="Successfully listed your account!")
 
 
 def setup(bot):
-    bot.add_cog(listing())
+    bot.add_cog(listing(bot))

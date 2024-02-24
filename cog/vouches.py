@@ -1,7 +1,7 @@
 import discord, os, asyncio, aiohttp, aiosqlite
 from discord.ext import commands, tasks
 from discord import Option
-from main import bot
+from bot import bot
 from discord import Webhook
 
 color = int(os.getenv("color"), 16)

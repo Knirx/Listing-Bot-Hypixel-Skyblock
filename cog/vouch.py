@@ -1,7 +1,7 @@
 import discord, os, aiohttp, aiosqlite
 from discord import slash_command, Option, Webhook
 from discord.ext import commands
-from main import bot
+from bot import bot
 
 color = int(os.getenv("color"), 16)
 vouches_webhook = os.getenv("vouches_webhook")

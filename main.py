@@ -4,6 +4,7 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from other.listing_view import listingButtons, ticket_delete_button
 from cog.tickets import TicketsView
+from bot import bot
 
 load_dotenv(".env")
 token = os.getenv("bot_token")
@@ -11,8 +12,8 @@ owner_id = int(os.getenv("bot_owner_id"))
 command_prefix = os.getenv("cmd_prefix")
 vouch_channel_id = int(os.getenv("vouch_channel"))
 intents = discord.Intents.all()
-bot = discord.Bot(command_prefix=command_prefix, intents=intents, token=token)
 owner_ids_array = [1174704996999233598, 1103236001410863145]
+
 
 async def database_stuff():
     async with aiosqlite.connect(f"data/database.db") as db:
@@ -26,25 +27,21 @@ async def database_stuff():
                 author_name STRING,
                 author_id INTEGER,
                 data TEXT
-            );
-        """)
+        );""")
         await db.execute("""CREATE TABLE IF NOT EXISTS vouches (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 author_id INTEGER,
                 seller_id INTEGER,
                 review TEXT,
                 avatar_url TEXT
-            );
-        """)
+        );""")
         await db.execute("""CREATE TABLE IF NOT EXISTS all_vouches (
                 author_id INTEGER,
                 author_name STRING,
                 author_pfp STRING,
                 message_content STRING,
                 img_urls STRING
-            );
-            """
-        )
+        );""")
         await db.commit()
 
 
@@ -68,24 +65,18 @@ async def update_listing_view():
                         await db.execute("DELETE FROM listing WHERE uuid = ?", (uuid,))
                         await db.commit()
                         continue
-                # rebuild embed from scratch
-                await message.edit(view=listingButtons(uuid))
+                await message.edit(view=listingButtons(bot, uuid))
 
 
 
 @bot.event
 async def on_ready():
-    print("starting...")
-    bot.add_view(ticket_delete_button())
-    print("25%")
+    bot.add_view(ticket_delete_button(bot))
     bot.add_view(TicketsView())
-    print("50%")
     await database_stuff()
-    print("75%")
-    #await update_listing_view()
-    print("100%")
-    await get_vouches_loop.start()
+    await update_listing_view()
     print(f"Logged in as {bot.user}")
+    await get_vouches_loop.start()
 
 
 @tasks.loop(hours=12)
@@ -123,9 +114,6 @@ async def get_vouches_loop():
                     (author_id, author_name, author_pfp, message_content, None))
                 await db.commit()
 
-
-#@bot.event
-#async def on_message():
 
 for files in os.listdir("cog"):
     if files.endswith(".py"):

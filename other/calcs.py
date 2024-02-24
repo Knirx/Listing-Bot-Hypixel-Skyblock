@@ -100,6 +100,7 @@ def dungeon_class_level(exp):
             level = level - 1 + (exp - previous) / (i - previous)
             return round(level, 2)
 
+
 def convert_to_int_with_letters(input_string):
     numeric_string = ''.join(filter(str.isdigit, input_string))
 
@@ -383,7 +384,6 @@ def get_skill_lvl(skill, exp, data, cap=60):
         104672425: 59,
         111672425: 60,
     }
-    #if skill == "SKILL_SOCIAL" or skill == "SKILL_RUNECRAFTING": return
     level50cap_skills = ["SKILL_TAMING", "SKILL_FORAGING", "SKILL_CARPENTRY", "SKILL_FISHING", "SKILL_ALCHEMY"]
     if skill == "SKILL_FARMING" and exp > 55172425:
         return get_farming_level_cap(data, exp, False)
@@ -539,4 +539,3 @@ def format_TBMK(number):
 def format_weight_number(number):
     if 0 <= number < 10000000:
         return f"{number:.0f}"
-

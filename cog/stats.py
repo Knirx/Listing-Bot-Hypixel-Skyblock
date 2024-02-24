@@ -2,7 +2,7 @@ import discord, json, PIL, easy_pil, os
 from other.request_data import *
 from discord import Option
 from discord.ext import commands
-from main import bot
+from bot import bot
 from PIL import Image
 from easy_pil import Editor, load_image_async, Font
 
@@ -13,7 +13,7 @@ with open("data/emojis.json") as emojis_json_file:
     emojis_json_file.close()
 
 class Stats(commands.Cog):
-    def __init__(self):
+    def __init__(self, bot):
         self.bot = bot
 
     @commands.slash_command()
@@ -66,4 +66,4 @@ class Stats(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Stats())
+    bot.add_cog(Stats(bot))

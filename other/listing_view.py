@@ -3,7 +3,7 @@ from other.request_data import *
 from other.calcs import *
 from discord import Option
 from discord.ext import commands
-from other.idk_what_this_is import bot
+from bot import bot
 from PIL import Image
 from io import BytesIO
 from easy_pil import Editor, load_image_async, Font
@@ -14,6 +14,7 @@ token = os.getenv("API_KEY")
 color = int(os.getenv("color"), 16)
 buy_acc_category = int(os.getenv("buy_acc_category"))
 seller_role_id = int(os.getenv("seller_role_id"))
+transcript_channel_id = int(os.getenv("transcript_channel_id"))
 
 with open("data/emojis.json") as emojis_json_file:
     emojis_json = json.load(emojis_json_file)
@@ -27,7 +28,7 @@ with open("data/emojisV3.json", 'r') as file:
 
 
 class ticket_delete_button(discord.ui.View):
-    def __init__(self):
+    def __init__(self, bot):
         super().__init__(timeout=None)
         self.bot = bot
 
@@ -67,7 +68,7 @@ class ticket_delete_button(discord.ui.View):
 
 
 class listingButtons(discord.ui.View):
-    def __init__(self, uuid, message=None):
+    def __init__(self, bot, uuid, message=None):
         super().__init__(timeout=None)
         self.bot = bot
         self.message = message
@@ -171,16 +172,16 @@ class listingButtons(discord.ui.View):
                 embed.add_field(name="Price & Payment Methods", value=f"{data['price']} | {data['payment_methods']}", inline=False)
                 embed.set_thumbnail(url=f"attachment://{thumbnail.filename}")
                 sent_message = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed, file=thumbnail,
-                                                       view=ticket_delete_button())
+                                                       view=ticket_delete_button(self.bot))
 
         if select.values[0] == "654":
-
             await interaction.response.defer()
 
             item_hash_value = ""
             value = 0
             net_worth_by_category = {}
             category_items = {}
+
             for types, help in self.skyhelper["networth"]["types"].items():
                 if types in ["essence", "sacks", "museum", "potion_bag", "fishing_bag", "personal_vault",
                              "candy_inventory"]:
@@ -297,5 +298,3 @@ class listingButtons(discord.ui.View):
                 embed.add_field(name=f"{emojis_json[dojo_key]} {dojo_key.replace('dojo_points_', '').replace('_', ' ').capitalize()}", value=f"{dojo_value}")
 
             await interaction.response.send_message(embed=embed, ephemeral=True, view=self)
-
-

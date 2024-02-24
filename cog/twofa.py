@@ -1,7 +1,7 @@
 import discord, os, pyotp, time, datetime, asyncio
 from discord import slash_command, Option
 from discord.ext import commands
-from main import bot
+from bot import bot
 
 color = int(os.getenv("color"), 16)
 

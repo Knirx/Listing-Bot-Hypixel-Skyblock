@@ -3,7 +3,7 @@ from other.request_data import *
 from other.calcs import *
 from discord import Option, slash_command
 from discord.ext import commands
-from other.idk_what_this_is import bot
+from bot import bot
 from other.listing_view import ticket_delete_button
 from PIL import Image
 from io import BytesIO
@@ -40,7 +40,6 @@ class BuyCoinTickets(discord.ui.Modal):
         self.add_item(self.payment_input)
 
 
-
     async def callback(self, interaction):
         await interaction.response.defer(ephemeral=True)
         if not self.children[1].value.isalpha() or self.children[1].value.lower() not in ('m', 'b'):
@@ -75,7 +74,7 @@ class BuyCoinTickets(discord.ui.Modal):
                                                  view_channel=True)
             await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
             await interaction.followup.send(content=f"New channel created at {ticket_channel.mention}", ephemeral=True)
-            meow = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed123, view=ticket_delete_button())
+            meow = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed123, view=ticket_delete_button(self.bot))
             await meow.pin()
 
 
@@ -130,7 +129,7 @@ class SellCoinTickets(discord.ui.Modal):
                                                      view_channel=True)
                 await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
                 await interaction.followup.send(content=f"New channel created at <#{ticket_channel.id}>", ephemeral=True)
-                meow = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed123, view=ticket_delete_button())
+                meow = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed123, view=ticket_delete_button(self.bot))
                 await meow.pin()
 
 
@@ -164,7 +163,7 @@ class SupportTickets(discord.ui.Modal):
                                                  view_channel=True)
             await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
             await interaction.followup.send(content=f"New channel created at {ticket_channel.mention}", ephemeral=True)
-            meow = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed123, view=ticket_delete_button())
+            meow = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed123, view=ticket_delete_button(self.bot))
             await meow.pin()
         except:
             await interaction.followup.send(content="Something went wrong please contact the seller!")
@@ -243,7 +242,7 @@ class AccountTickets(discord.ui.Modal):
                         value=f"{emojis_json['faction']} Faction: {data['faction']}\n{emojis_json['mageRep']} Mage rep: {data['mages_reputation']}\n{emojis_json['barbRep']} Barbarian rep: {data['barbarians_reputation']}", inline=True)
         embed.add_field(name="Price & Payment Methods", value=f"{price} | {payment_methods}", inline=False)
         embed.set_thumbnail(url=f"attachment://{thumbnail.filename}")
-        await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed, file=thumbnail, view=ticket_delete_button())
+        await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed, file=thumbnail, view=ticket_delete_button(self.bot))
 
 class TicketsView(discord.ui.View):
     def __init__(self):
@@ -278,7 +277,7 @@ class TicketsView(discord.ui.View):
             await interaction.response.send_modal(SupportTickets())
 
 class Ticket(commands.Cog):
-    def __init__(self):
+    def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -326,10 +325,8 @@ class Ticket(commands.Cog):
     @slash_command()
     @commands.has_permissions(administrator=True)
     async def tickets(self, ctx: discord.ApplicationContext):
-        channel = self.bot.get_channel(panel_channel)
         em = discord.Embed(
             title='Tickets',
-            # Add emojis urself in emojis.json
             description=f'**WE SELL COINS FOR** ```0.06/m.```\n**WE SELL ITEMS FOR** ```0.05/m.```\n\n**WE BUY COINS FOR** ```0.03/m.```\n**WE BUY ITEMS FOR** ```0.02/m.```\n\n**HOWEVER THIS DEPENDS HIGHLY ON THE AMOUNT YOU SELL TO US**\n\n***WE ALSO BUY ACCOUNTS, OPEN A TICKET BELOW!***\n\n\n[🎫] For Sell Account\n\n[{emojis_json["tickets_sell"]}] For Sell Coins\n\n[{emojis_json["tickets_buy"]}] For Buy Coins\n\n[{emojis_json["tickets_support"]}] For Support',
             color=color
         )
@@ -338,4 +335,4 @@ class Ticket(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Ticket())
+    bot.add_cog(Ticket(bot))
