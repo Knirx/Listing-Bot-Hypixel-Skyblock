@@ -173,12 +173,6 @@ class listingButtons(discord.ui.View):
                 sent_message = await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed, file=thumbnail,
                                                        view=ticket_delete_button())
 
-
-                #meow = await ticket_channel.send(f"<@&{seller_role_id}> {interaction.user.mention} {interaction.channel.mention}", embed=self.embed, view=ticketCloseButton(acc_id))
-                # print(self.message, self.message.embeds)
-                # await self.send_embed_to_channel(self.message, ticket_channel, new_content=f"<@&{seller_role_id}>",
-                                                 # new_view=ticket_delete_button())
-
         if select.values[0] == "654":
 
             await interaction.response.defer()
@@ -187,8 +181,6 @@ class listingButtons(discord.ui.View):
             value = 0
             net_worth_by_category = {}
             category_items = {}
-            #print(data)
-
             for types, help in self.skyhelper["networth"]["types"].items():
                 if types in ["essence", "sacks", "museum", "potion_bag", "fishing_bag", "personal_vault",
                              "candy_inventory"]:
