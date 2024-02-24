@@ -1,6 +1,6 @@
 import discord, os
 from discord.ext import commands
-
+# TIC TAC TOE GAME WITH BUTTONS
 color = int(os.getenv("color"), 16)
 class TicTacToe(commands.Cog):
     def __init__(self, bot):
