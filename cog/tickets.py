@@ -321,6 +321,7 @@ class Ticket(commands.Cog):
             await ctx.channel.delete()
         else:
             await ctx.respond("You have no perms to do this!", ephemeral=True)
+            return
 
     @slash_command()
     @commands.has_permissions(administrator=True)

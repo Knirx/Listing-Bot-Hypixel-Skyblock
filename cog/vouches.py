@@ -1,9 +1,10 @@
-import discord, os, asyncio, aiohttp
+import discord, os, asyncio, aiohttp, aiosqlite
 from discord.ext import commands, tasks
 from discord import Option
 from main import bot
 from discord import Webhook
 
+color = int(os.getenv("color"), 16)
 vouch_channel_id = int(os.getenv("vouch_channel"))
 
 class resendVouches(commands.Cog):
@@ -12,7 +13,7 @@ class resendVouches(commands.Cog):
 
     @commands.has_permissions(administrator=True)
     @commands.slash_command()
-    async def resend_vouch_data(self, ctx: discord.ApplicationContext, webhook_url: Optio(str, f"Enter the webhook you want to send the vouches to!")):
+    async def resend_vouch_data(self, ctx: discord.ApplicationContext, webhook_url: Option(str, f"Enter the webhook you want to send the vouches to!")):
         await ctx.respond("Sending vouches ig", ephemeral=True)
         async with aiosqlite.connect(f'data/database.db') as db:
             async with db.execute('SELECT author_id, seller_id, review, avatar_url FROM vouches') as cursor:
@@ -27,7 +28,7 @@ class resendVouches(commands.Cog):
                     embed = discord.Embed(
                         title=f"Vouch",
                         description=f"**Review:** <@{seller_id}> {review}\n\n**Voucher's ID:** {author_id}",
-                        colour=color
+                        color=color
                     )
                     try:
                         await webhook.send(embed=embed, avatar_url=f"{avatar_url}",
@@ -54,7 +55,7 @@ class resendVouches(commands.Cog):
                         embed = discord.Embed(
                             title=f"Vouch",
                             description=f"**Review:** {message_content}\n\n**Voucher's ID:** {author_id}",
-                            colour=color
+                            color=color
                         )
                         try:
                             await webhook.send(embed=embed, avatar_url=f"{author_pfp}",
@@ -69,4 +70,4 @@ class resendVouches(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(GetVouches(bot))
+    bot.add_cog(resendVouches(bot))
