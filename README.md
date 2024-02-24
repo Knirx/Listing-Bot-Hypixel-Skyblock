@@ -47,3 +47,6 @@ Change the .env file for the bot setup and the data/emojis.json to use emojis wi
 ### DM @notnomv2 or join his [Discord Server](https://discord.gg/noms) if you want a faster bot with more features!
 **(DO NOT BUY LENNY'S, HE DOES NOT UPDATE IT)**
 
+## Credits
+Thanks to [Schubilegend](https://github.com/Schubilegend) for telling me how to create a README.
+
