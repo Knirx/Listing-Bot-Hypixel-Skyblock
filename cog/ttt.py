@@ -3,6 +3,8 @@ from discord.ext import commands
 from bot import bot
 
 color = int(os.getenv("color"), 16)
+
+
 class TicTacToe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
