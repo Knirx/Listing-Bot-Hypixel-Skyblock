@@ -22,7 +22,7 @@ Change the .env file for the bot setup and the data/emojis.json to use emojis wi
 
 !payments (shows all payment methods of all users that did /payment_methods (requires Administrator permissions)
 
-!payments <user> (shows the payment methods of the user)
+!payments [user or ID] (shows the payment methods of the user)
 
 /list (lists an account, requires Administrator permissions)
 
