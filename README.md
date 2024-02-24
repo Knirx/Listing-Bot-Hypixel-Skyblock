@@ -44,6 +44,6 @@ Change the .env file for the bot setup and the data/emojis.json to use emojis wi
 ### -> DM @knaxv9 on discord
 
 ## Not happy with the bot?
-### DM @notnomv2 or join his [discord](https://discord.gg/noms) if you want a faster bot with more features!
+### DM @notnomv2 or join his [Discord Server](https://discord.gg/noms) if you want a faster bot with more features!
 **(DO NOT BUY LENNY'S, HE DOES NOT UPDATE IT)**
 
