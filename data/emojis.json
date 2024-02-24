@@ -1,5 +1,7 @@
 {
   "example": "<:emoji_name:emoji_id>",
+  "exmaple_animated": "<a:emoji_name:emoji_id>",
+  "example_2": "<:skill_average:1146806722464329880>",
   "skillAverage": "",
   "catacombs": "",
   "weight": "",
