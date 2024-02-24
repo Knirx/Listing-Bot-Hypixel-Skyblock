@@ -87,6 +87,7 @@ async def on_ready():
     bot.add_view(TicketsView())
     await database_stuff()
     await update_listing_view()
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="!payments"))
     print(f"Logged in as {bot.user}")
     await get_vouches_loop.start()
 
