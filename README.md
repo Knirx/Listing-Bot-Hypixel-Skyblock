@@ -13,6 +13,8 @@ Change the .env file for the bot setup and the data/emojis.json to use emojis wi
 ### After Bot & Installation 
 **After you have pasted the bot token in the .env file and put in all the other channel, category and role IDs you can start the bot in the main.py file.** 
 
+**Make sure to leave a ⭐ if everything works for you!**
+
 ## Preview:
 ## ![image](https://github.com/Knirx/uwuDaddySchubilegend/assets/147601199/ebe9569f-8431-48c4-a88a-938648718073)
 
