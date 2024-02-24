@@ -5,3 +5,4 @@
 # Installation 
 ### `pip install -r requirements.txt` to install the python packages & python 3.10 or newer is required.
 
+Change the .env file for the bot setup and the data/emojis.json use emojis with the bot. Leave the emojis clear if you dont want to use them. 
