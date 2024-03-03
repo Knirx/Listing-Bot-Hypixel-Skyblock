@@ -15,8 +15,12 @@ Change the .env file for the bot setup and the data/emojis.json to use emojis wi
 
 **Make sure to leave a ⭐ if everything works for you!**
 
-## Preview:
+## Preview Account Listing:
 ## ![image](https://github.com/Knirx/uwuDaddySchubilegend/assets/147601199/ebe9569f-8431-48c4-a88a-938648718073)
+
+## Preview Profile Listing:
+## ![image](https://github.com/Knirx/Listing-Bot-Hypixel-Skyblock/assets/147601199/323d38e6-0d6b-4b7f-a3a8-d48f15eb01d3)
+
 
 ## Commands:
 
@@ -27,6 +31,8 @@ Change the .env file for the bot setup and the data/emojis.json to use emojis wi
 !payments [user or ID] (shows the payment methods of the user)
 
 /list (lists an account, requires Administrator permissions)
+
+/list_profile (list a profile, requires Administartor permissions)
 
 /stats (stats display)
 
@@ -41,6 +47,8 @@ Change the .env file for the bot setup and the data/emojis.json to use emojis wi
 /resend_vouch_data (sends all the automatically stored vouches to a other webhook incase of term, requires Administrator permissions)
 
 /close (deletes the channel and sends a transcript to transcript channel, requires Administrator permissions)
+
+
 
 ## Have any questions?
 **-> DM @knaxv9 on discord**
