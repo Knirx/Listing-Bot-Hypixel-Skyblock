@@ -6,8 +6,6 @@ from bot import bot
 color = int(os.getenv("color"), 16)
 vouches_webhook = os.getenv("vouches_webhook")
 vouch_role_id = int(os.getenv("vouch_role_id"))
-
-
 class vouch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

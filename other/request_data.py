@@ -15,6 +15,25 @@ def get_uuid(username):
         return None
 
 
+def get_number_of_collections():
+    total_collections = 0
+    request = requests.get(f"https://api.hypixel.net/resources/skyblock/collections?key={hypixelAPIkey}").json()
+    for key, value in request["collections"].items():
+        total_collections += len(value["items"])
+    return total_collections
+
+def get_collection_data():
+    return requests.get(f"https://api.hypixel.net/resources/skyblock/collections?key={hypixelAPIkey}").json()
+
+def get_main_profile_and_index(uuid):
+    index = -1
+    data = requests.get(f"https://api.hypixel.net/v2/skyblock/profiles?key={hypixelAPIkey}&uuid={uuid}").json()
+    for profiles in data["profiles"]:
+        index += 1
+        if profiles["selected"] is True:
+            return [profiles["members"][uuid], profiles, index]
+
+
 def get_main_profile(uuid):
     data = requests.get(f"https://api.hypixel.net/v2/skyblock/profiles?key={hypixelAPIkey}&uuid={uuid}").json()
     for profiles in data["profiles"]:
@@ -86,6 +105,39 @@ def get_skyhelper_data(uuid):
         return get_networth(requests.get(f"http://{host}/v1/profiles/{uuid}?key={skyhelper_key}").json()["data"][0])
     except:
         return {"networth": 0, "soulboundNetworth": 0, "unsoulboundNetworth": 0, "coins": 0, "weight": 0, "username": "", "rank": ""}
+
+def get_skyhelper_data_only(uuid):
+    try:
+        return requests.get(f"http://{host}/v1/profiles/{uuid}?key={skyhelper_key}").json()["data"][0]
+    except:
+        return {"networth": 0, "soulboundNetworth": 0, "unsoulboundNetworth": 0, "coins": 0, "weight": 0, "username": "", "rank": ""}
+
+
+def get_networth_with_types(skyhelper_data):
+    pattern = r'§\w'
+    networth_dict = {"networth": 0, "soulboundNetworth": 0, "unsoulboundNetworth": 0, "coins": 0, "weight": 0,
+                     "username": "", "rank": "", "uuid": "", "purse": 0, "bank": 0}
+    networth_dict["networth"] = format_TBMK(int(skyhelper_data["networth"]["networth"]))
+    networth_dict["purse"] = format_TBMK(int(skyhelper_data["networth"]["purse"]))
+    networth_dict["bank"] = format_TBMK(int(skyhelper_data["networth"]["bank"]))
+    networth_dict["soulboundNetworth"] = format_TBMK(
+        int(skyhelper_data["networth"]["networth"]) - int(skyhelper_data["networth"]["unsoulboundNetworth"]))
+    networth_dict["unsoulboundNetworth"] = format_TBMK(int(skyhelper_data["networth"]["unsoulboundNetworth"]))
+    networth_dict["coins"] = format_TBMK(
+        int(skyhelper_data["networth"]["purse"]) + int(skyhelper_data["networth"]["bank"]))
+    try:
+        networth_dict["weight"] = format_weight_number(int(skyhelper_data["weight"]["senither"]["weight"]) + int(
+            skyhelper_data["weight"]["senither"]["weight_overflow"]))
+    except:
+        pass
+    networth_dict["rank"] = re.sub(pattern, "", skyhelper_data["rank"]).replace("[", "").replace("]", "")
+    networth_dict["uuid"] = skyhelper_data["uuid"]
+    networth_dict["username"] = skyhelper_data["username"]
+    types_array = ["armor", "equipment", "wardrobe", "inventory", "enderchest", "accessories", "storage", "pets", "sacks"]
+    for types_key, types_value in skyhelper_data["networth"]["types"].items():
+        if types_key in types_array:
+            networth_dict[f"SKYHELPER_TYPES_{types_key}"] = format_TBMK(int(types_value.get("total")))
+    return networth_dict
 
 def get_networth(skyhelper_data):
     pattern = r'§\w'

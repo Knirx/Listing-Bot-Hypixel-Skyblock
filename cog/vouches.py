@@ -7,7 +7,6 @@ from discord import Webhook
 color = int(os.getenv("color"), 16)
 vouch_channel_id = int(os.getenv("vouch_channel"))
 
-
 class resendVouches(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

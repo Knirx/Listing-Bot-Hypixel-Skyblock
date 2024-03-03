@@ -1,7 +1,4 @@
 {
-  "example": "<:emoji_name:emoji_id>",
-  "exmaple_animated": "<a:emoji_name:emoji_id>",
-  "example_2": "<:skill_average:1146806722464329880>",
   "skillAverage": "",
   "catacombs": "",
   "weight": "",
@@ -69,5 +66,19 @@
   "tickets_sell": "",
   "tickets_buy": "",
   "tickets_support": "",
-  "tickets_acc_selling": ""
+  "tickets_acc_selling": "",
+  "new_ones": "are below - changed 4.3.24",
+  "networthPurse": "",
+  "SKYHELPER_TYPES_sacks": "",
+  "SKYHELPER_TYPES_armor": "",
+  "SKYHELPER_TYPES_equipment": "",
+  "SKYHELPER_TYPES_wardrobe": "",
+  "SKYHELPER_TYPES_inventory": "",
+  "SKYHELPER_TYPES_enderchest": "",
+  "SKYHELPER_TYPES_accessories": "",
+  "SKYHELPER_TYPES_storage": "",
+  "SKYHELPER_TYPES_pets": "",
+  "collections": "",
+  "minions": "",
+  "rift": ""
 }

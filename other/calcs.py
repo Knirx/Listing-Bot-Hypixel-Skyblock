@@ -536,6 +536,42 @@ def format_TBMK(number):
         return str(number)
 
 
+
+def get_minion_slots(exp, cap=26):
+    minions = {
+        0: 5,
+        5: 6,
+        15: 7,
+        30: 8,
+        50: 9,
+        75: 10,
+        100: 11,
+        125: 12,
+        150: 13,
+        175: 14,
+        200: 15,
+        225: 16,
+        250: 17,
+        275: 18,
+        300: 19,
+        350: 20,
+        400: 21,
+        450: 22,
+        500: 23,
+        550: 24,
+        600: 25,
+        650: 26,
+    }
+    for i in minions.keys():
+        level = minions[i]
+        if exp >= i:
+            if level == cap:
+                return level
+        else:
+            level = level - 1
+            return level
+
+
 def format_weight_number(number):
     if 0 <= number < 10000000:
         return f"{number:.0f}"

@@ -2,7 +2,7 @@ import discord, os, asyncio, aiosqlite
 from discord import Option
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from other.listing_view import listingButtons, ticket_delete_button
+from other.listing_view import listingButtons, ticket_delete_button, EmbedView
 from cog.tickets import TicketsView
 from bot import bot
 
@@ -13,7 +13,6 @@ command_prefix = os.getenv("cmd_prefix")
 vouch_channel_id = int(os.getenv("vouch_channel"))
 color = int(os.getenv("color"), 16)
 intents = discord.Intents.all()
-owner_ids_array = [1174704996999233598, 1103236001410863145]
 
 
 async def database_stuff():
@@ -29,21 +28,36 @@ async def database_stuff():
                 author_id INTEGER,
                 data TEXT
                 );""")
-        await db.execute("""CREATE TABLE IF NOT EXISTS vouches (
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS profile_listing (
+                id INTEGER PRIMARY KEY,
+                uuid STRING,
+                price INTEGER,
+                channel_id INTEGER,
+                message_id INTEGER,
+                author_name STRING,
+                author_id INTEGER,
+                skyhelper_data TEXT,
+                hypixel_data TEXT
+                );""")
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS vouches (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 author_id INTEGER,
                 seller_id INTEGER,
                 review TEXT,
                 avatar_url TEXT
                 );""")
-        await db.execute("""CREATE TABLE IF NOT EXISTS all_vouches (
-                        author_id INTEGER,
-                        author_name STRING,
-                        author_pfp STRING,
-                        message_content STRING,
-                        img_urls STRING
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS all_vouches (
+                author_id INTEGER,
+                author_name STRING,
+                author_pfp STRING,
+                message_content STRING,
+                img_urls STRING
                 );""")
-        await db.execute("""CREATE TABLE IF NOT EXISTS payments (
+        await db.execute("""
+                CREATE TABLE IF NOT EXISTS payments (
                 id INTEGER PRIMARY KEY,
                 user_id INTEGER,
                 LTC STRING,
@@ -56,6 +70,28 @@ async def database_stuff():
                 );""")
         await db.commit()
 
+
+async def update_profile_listing_view():
+    async with aiosqlite.connect(f"data/database.db") as db:
+        async with db.execute("SELECT * FROM profile_listing") as c:
+            async for result in c:
+                uuid = result[1]
+                message_id = result[4]
+                try:
+                    channel = await bot.fetch_channel(result[3])
+                except:
+                    async with db.execute("BEGIN"):
+                        await db.execute("DELETE FROM profile_listing WHERE uuid = ?", (uuid,))
+                        await db.commit()
+                        continue
+                try:
+                    message = await channel.fetch_message(message_id)
+                except:
+                    async with db.execute("BEGIN"):
+                        await db.execute("DELETE FROM profile_listing WHERE uuid = ?", (uuid,))
+                        await db.commit()
+                        continue
+                await message.edit(view=EmbedView(bot, uuid))
 
 async def update_listing_view():
     async with aiosqlite.connect(f"data/database.db") as db:
@@ -87,7 +123,7 @@ async def on_ready():
     bot.add_view(TicketsView())
     await database_stuff()
     await update_listing_view()
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="!payments"))
+    await update_profile_listing_view()
     print(f"Logged in as {bot.user}")
     await get_vouches_loop.start()
 
