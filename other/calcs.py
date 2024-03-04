@@ -536,6 +536,66 @@ def format_TBMK(number):
         return str(number)
 
 
+def collections_data(data, type, collection_data):
+    maxCollections = 0
+    combined_dict = {}
+    collection_name = None
+    for members_id, members_data in data["members"].items():
+        try:
+            members_datas = data["members"][members_id]["collection"].items()
+        except KeyError:
+            continue
+        for item_name, item_value in members_datas:
+            if item_name in combined_dict:
+                combined_dict[item_name] += item_value
+            else:
+                combined_dict[item_name] = item_value
+
+    max_tiers = 0
+    item_valuezz = 0
+    max_tierz = 0
+    maxTiers = 0
+    collection_info_dict = {}
+
+    for name, items in collection_data["collections"][type]["items"].items():
+        for item_namez, item_valuez in combined_dict.items():
+            if item_namez == name and item_valuez >= items["maxTiers"]:
+                item_valuezz = item_valuez
+                tiers_list = items["tiers"]
+                for tier_data in tiers_list:
+                    if item_valuezz >= tier_data["amountRequired"]:
+                        maxCollections = tier_data["tier"]
+                        maxTiers = items["maxTiers"]
+                        collection_name = items["name"]
+                        if maxCollections == maxTiers:
+                            max_tierz += 1
+                            max_tiers = "yes"
+                        else:
+                            max_tiers = "no"
+
+            elif item_namez == name:
+                tiers_list = items["tiers"]
+                for tier_data in tiers_list:
+                    if item_valuezz >= tier_data["amountRequired"]:
+                        maxCollections = tier_data["tier"]
+                        maxTiers = items["maxTiers"]
+                        collection_name = items["name"]
+                        if maxCollections == maxTiers:
+                            max_tierz += 1
+                            max_tiers = "yes"
+                        else:
+                            max_tiers = "no"
+        formatted_number = format_TBMK(item_valuezz)
+
+        collection_info_dict[collection_name] = {
+            "name": collection_name,
+            "level": maxCollections,
+            "collection": formatted_number,
+            "maxed?": max_tiers,
+            "max": maxTiers,
+        }
+
+    return [collection_info_dict, max_tierz]
 
 def get_minion_slots(exp, cap=26):
     minions = {
