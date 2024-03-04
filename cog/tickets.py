@@ -245,8 +245,9 @@ class AccountTickets(discord.ui.Modal):
         await ticket_channel.send(f"<@&{seller_role_id}>", embed=embed, file=thumbnail, view=ticket_delete_button(self.bot))
 
 class TicketsView(discord.ui.View):
-    def __init__(self):
+    def __init__(self, bot):
         super().__init__(timeout=None)
+        self.bot = bot
 
     options = [
         discord.SelectOption(label='Sell Account', description='Click here to sell an account!', emoji='🎫', value='1'),
@@ -279,10 +280,6 @@ class TicketsView(discord.ui.View):
 class Ticket(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.bot.add_view(TicketsView())
 
 
     @slash_command()
@@ -330,7 +327,7 @@ class Ticket(commands.Cog):
             description=f'**WE SELL COINS FOR** ```0.06/m.```\n**WE SELL ITEMS FOR** ```0.05/m.```\n\n**WE BUY COINS FOR** ```0.03/m.```\n**WE BUY ITEMS FOR** ```0.02/m.```\n\n**HOWEVER THIS DEPENDS HIGHLY ON THE AMOUNT YOU SELL TO US**\n\n***WE ALSO BUY ACCOUNTS, OPEN A TICKET BELOW!***\n\n\n[🎫] For Sell Account\n\n[{emojis_json["tickets_sell"]}] For Sell Coins\n\n[{emojis_json["tickets_buy"]}] For Buy Coins\n\n[{emojis_json["tickets_support"]}] For Support',
             color=color
         )
-        await ctx.send(embed=em, view=TicketsView())
+        await ctx.send(embed=em, view=TicketsView(self.bot))
         await ctx.respond(content="Sent!", ephemeral=True)
 
 
