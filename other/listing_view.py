@@ -17,7 +17,6 @@ seller_role_id = int(os.getenv("seller_role_id"))
 transcript_channel_id = int(os.getenv("transcript_channel_id"))
 buy_profile_category_id = int(os.getenv("buy_profile_category_id"))
 
-
 with open("data/emojis.json") as emojis_json_file:
     emojis_json = json.load(emojis_json_file)
     emojis_json_file.close()
@@ -382,9 +381,9 @@ class NetworthView(discord.ui.View):
         }
 
     optionz = [
-        discord.SelectOption(label='Networth', description='Networth Breakdown', emoji=f'{emojis_json["networthBank"]}', value='58391'),
+        discord.SelectOption(label='Networth', description='Networth Breakdown', emoji='🪙', value='58391'),
         discord.SelectOption(label='Unsoulbound Networth', description='Unsoulbound Networth Breakdown', emoji='💸', value='58392'),
-        discord.SelectOption(label='Collections', description='All Collections', emoji=f'{emojis_json["carpentry"]}', value='987'),
+        discord.SelectOption(label='Collections', description='All Collections', emoji='<:carpentry:1147858296993226763>', value='987'),
     ]
 
     @discord.ui.select(
@@ -421,7 +420,7 @@ class NetworthView(discord.ui.View):
 
             embed = discord.Embed(
                 title="*Someone's* Networth",
-                description=f"{emojis_json['networthBank']} Networth: **{self.skyhelper['networth']}** (Coins: **{self.skyhelper['coins']}**) Soulbound: **{self.skyhelper['soulboundNetworth']}**",
+                description=f"<:bank:1161025731065811057> Networth: **{self.skyhelper['networth']}** (Coins: **{self.skyhelper['coins']}**) Soulbound: **{self.skyhelper['soulboundNetworth']}**",
                 color=color,
             )
 
@@ -467,7 +466,7 @@ class NetworthView(discord.ui.View):
 
             embed = discord.Embed(
                 title="*Someone's* Networth",
-                description=f"{emojis_json['networthBank']} Networth: **{self.skyhelper['networth']}** (Coins: **{self.skyhelper['coins']}**) Soulbound: **{self.skyhelper['unsoulboundNetworth']}**",
+                description=f"<:bank:1161025731065811057> Networth: **{self.skyhelper['networth']}** (Coins: **{self.skyhelper['coins']}**) Soulbound: **{self.skyhelper['unsoulboundNetworth']}**",
                 color=color,
             )
 
@@ -509,12 +508,12 @@ class NetworthView2(discord.ui.View):
 
 
     optionzs = [
-        discord.SelectOption(label='Farming', description='Farming collections', emoji=f'{emojis_json["farming"]}', value='987654'),
-        discord.SelectOption(label='Mining', description='Mining collections', emoji=f'{emojis_json["mining"]}', value='876'),
-        discord.SelectOption(label='Combat', description='Combat collections', emoji=f'{emojis_json["combat"]}', value='765'),
-        discord.SelectOption(label='Foraging', description='Foraging collections', emoji=f'{emojis_json["foraging"]}', value='654'),
-        discord.SelectOption(label='Fishing', description='Fishing collections', emoji=f'{emojis_json["fishing"]}>', value='456'),
-        discord.SelectOption(label='Rift', description='Rift collections', emoji=f'{emojis_json["rift"]}', value='567'),
+        discord.SelectOption(label='Farming', description='Farming collections', emoji='<:farming:1147858076754518107>', value='987654'),
+        discord.SelectOption(label='Mining', description='Mining collections', emoji='<:mining:1147859106263212132>', value='876'),
+        discord.SelectOption(label='Combat', description='Combat collections', emoji='<:combat:1147857311675715636>', value='765'),
+        discord.SelectOption(label='Foraging', description='Foraging collections', emoji='<:foraging:1147858727836328026>', value='654'),
+        discord.SelectOption(label='Fishing', description='Fishing collections', emoji='<:fishing:1147858321265676320>', value='456'),
+        discord.SelectOption(label='Rift', description='Rift collections', emoji='<:rift:1160638507446976563>', value='567'),
     ]
 
     @discord.ui.select(
@@ -527,72 +526,16 @@ class NetworthView2(discord.ui.View):
     async def callback(self, select, interaction):
         if select.values[0] == "987654":
             await interaction.response.defer()
-            maxCollections = 0
-            combined_dict = {}
-            collection_name = None
-            data = self.hypixel[1]
-            for members_id, members_data in data["members"].items():
-                try:
-                    members_datas = data["members"][members_id]["collection"].items()
-                except KeyError:
-                    continue
-                for item_name, item_value in members_datas:
-                    if item_name in combined_dict:
-                        combined_dict[item_name] += item_value
-                    else:
-                        combined_dict[item_name] = item_value
 
-            max_tiers = 0
-            item_valuezz = 0
-            max_tierz = 0
-            maxTiers = 0
-            collection_info_dict = {}
-
-            for name, items in self.collection_data["collections"]["FARMING"]["items"].items():
-                for item_namez, item_valuez in combined_dict.items():
-                    if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_valuez
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-
-                    elif item_namez == name:
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-                formatted_number = format_TBMK(item_valuezz)
-
-                collection_info_dict[collection_name] = {
-                    "name": collection_name,
-                    "level": maxCollections,
-                    "collection": formatted_number,
-                    "maxed?": max_tiers,
-                    "max": maxTiers,
-                }
+            collection_info_dict_data = collections_data(self.hypixel[1], "FARMING", self.collection_data)
 
             embed = discord.Embed(
                 title=f"Farming Collection Breakdown",
-                description=f"**Maxed Collections: {max_tierz}/17**",
+                description=f"**Maxed Collections: {collection_info_dict_data[1]}/17**",
                 color=color,
             )
 
-            for collection_name, collection_data in collection_info_dict.items():
+            for collection_name, collection_data in collection_info_dict_data[0].items():
                 embed.add_field(
                     name=f"",
                     value=f"**{collection_name}** Level: **{collection_data['level']}** / {collection_data['max']} (`{collection_data['collection']}`)",
@@ -606,71 +549,17 @@ class NetworthView2(discord.ui.View):
 
         elif select.values[0] == "876":
             await interaction.response.defer()
-            maxCollections = 0
-            combined_dict = {}
-            collection_name = None
-            data = self.hypixel[1]
 
-            for members_id, members_data in data["members"].items():
-                try:
-                    members_datas = data["members"][members_id]["collection"].items()
-                except KeyError:
-                    continue
-                for item_name, item_value in members_datas:
-                    if item_name in combined_dict:
-                        combined_dict[item_name] += item_value
-                    else:
-                        combined_dict[item_name] = item_value
-            max_tiers = 0
-            item_valuezz = 0
-            max_tierz = 0
-            maxTiers = 0
-            collection_info_dict = {}
-            for name, items in self.collection_data["collections"]["MINING"]["items"].items():
-                for item_namez, item_valuez in combined_dict.items():
-                    if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_valuez
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
+            collection_info_dict_data = collections_data(self.hypixel[1], "MINING", self.collection_data)
 
-                    elif item_namez == name:
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-                formatted_number = format_TBMK(item_valuezz)
-
-                collection_info_dict[collection_name] = {
-                    "name": collection_name,
-                    "level": maxCollections,
-                    "collection": formatted_number,
-                    "maxed?": max_tiers,
-                    "max": maxTiers,
-                }
             embed = discord.Embed(
-                title=f"Farming Collection Breakdown",
-                description=f"**Maxed Collections: {max_tierz}/22**",
+                title=f"Mining Collection Breakdown",
+                description=f"**Maxed Collections: {collection_info_dict_data[1]}/22**",
                 color=color,
             )
 
 
-            for collection_name, collection_data in collection_info_dict.items():
+            for collection_name, collection_data in collection_info_dict_data[0].items():
                 embed.add_field(
                     name=f"",
                     value=f"**{collection_name}** Level: **{collection_data['level']}** / {collection_data['max']} (`{collection_data['collection']}`)",
@@ -684,77 +573,17 @@ class NetworthView2(discord.ui.View):
 
 
         elif select.values[0] == "765":
-
             await interaction.response.defer()
-            maxCollections = 0
-            combined_dict = {}
-            collection_name = None
-            data = self.hypixel[1]
 
-            for members_id, members_data in data["members"].items():
-                try:
-                    members_datas = data["members"][members_id]["collection"].items()
-                except KeyError:
-                    continue
+            collection_info_dict_data = collections_data(self.hypixel[1], "COMBAT", self.collection_data)
 
-                for item_name, item_value in members_datas:
-                    if item_name in combined_dict:
-                        combined_dict[item_name] += item_value
-                    else:
-                        combined_dict[item_name] = item_value
-
-
-            max_tiers = 0
-            item_valuezz = 0
-            max_tierz = 0
-            maxTiers = 0
-            collection_info_dict = {}
-
-            for name, items in self.collection_data["collections"]["COMBAT"]["items"].items():
-                for item_namez, item_valuez in combined_dict.items():
-                    if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_valuez
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-
-                    elif item_namez == name:
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-                formatted_number = format_TBMK(item_valuezz)
-
-
-                collection_info_dict[collection_name] = {
-                    "name": collection_name,
-                    "level": maxCollections,
-                    "collection": formatted_number,
-                    "maxed?": max_tiers,
-                    "max": maxTiers,
-                }
             embed = discord.Embed(
-                title=f"Farming Collection Breakdown",
-                description=f"**Maxed Collections: {max_tierz}/11**",
+                title=f"Combat Collection Breakdown",
+                description=f"**Maxed Collections: {collection_info_dict_data[1]}/11**",
                 color=color,
             )
 
-            for collection_name, collection_data in collection_info_dict.items():
+            for collection_name, collection_data in collection_info_dict_data[0].items():
                 embed.add_field(
                     name=f"",
                     value=f"**{collection_name}** Level: **{collection_data['level']}** / {collection_data['max']} (`{collection_data['collection']}`)",
@@ -769,75 +598,15 @@ class NetworthView2(discord.ui.View):
         elif select.values[0] == "654":
             await interaction.response.defer()
 
-            maxCollections = 0
-            combined_dict = {}
-            collection_name = None
-            data = self.hypixel[1]
+            collection_info_dict_data = collections_data(self.hypixel[1], "FORAGING", self.collection_data)
 
-            for members_id, members_data in data["members"].items():
-                try:
-                    members_datas = data["members"][members_id]["collection"].items()
-                except KeyError:
-                    continue
-
-                for item_name, item_value in members_datas:
-                    if item_name in combined_dict:
-                        combined_dict[item_name] += item_value
-                    else:
-                        combined_dict[item_name] = item_value
-
-
-            max_tiers = 0
-            item_valuezz = 0
-            max_tierz = 0
-            maxTiers = 0
-            collection_info_dict = {}
-
-            for name, items in self.collection_data["collections"]["FORAGING"]["items"].items():
-                for item_namez, item_valuez in combined_dict.items():
-                    if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_valuez
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-
-                    elif item_namez == name:
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-                formatted_number = format_TBMK(item_valuezz)
-
-
-                collection_info_dict[collection_name] = {
-                    "name": collection_name,
-                    "level": maxCollections,
-                    "collection": formatted_number,
-                    "maxed?": max_tiers,
-                    "max": maxTiers,
-                }
             embed = discord.Embed(
-                title=f"Farming Collection Breakdown",
-                description=f"**Maxed Collections: {max_tierz}/6**",
+                title=f"Foraging Collection Breakdown",
+                description=f"**Maxed Collections: {collection_info_dict_data[1]}/6**",
                 color=color,
             )
 
-            for collection_name, collection_data in collection_info_dict.items():
+            for collection_name, collection_data in collection_info_dict_data[0].items():
                 embed.add_field(
                     name=f"",
                     value=f"**{collection_name}** Level: **{collection_data['level']}** / {collection_data['max']} (`{collection_data['collection']}`)",
@@ -852,74 +621,15 @@ class NetworthView2(discord.ui.View):
         elif select.values[0] == "456":
             await interaction.response.defer()
 
-            maxCollections = 0
-            combined_dict = {}
-            collection_name = None
-            data = self.hypixel[1]
+            collection_info_dict_data = collections_data(self.hypixel[1], "FISHING", self.collection_data)
 
-            for members_id, members_data in data["members"].items():
-                try:
-                    members_datas = data["members"][members_id]["collection"].items()
-                except KeyError:
-                    continue
-
-                for item_name, item_value in members_datas:
-                    if item_name in combined_dict:
-                        combined_dict[item_name] += item_value
-                    else:
-                        combined_dict[item_name] = item_value
-
-            max_tiers = 0
-            item_valuezz = 0
-            max_tierz = 0
-            maxTiers = 0
-            collection_info_dict = {}
-
-            for name, items in self.collection_data["collections"]["FISHING"]["items"].items():
-                for item_namez, item_valuez in combined_dict.items():
-                    if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_valuez
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-
-                    elif item_namez == name:
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else: 
-                                    max_tiers = "no"
-                formatted_number = format_TBMK(item_valuezz)
-
-
-                collection_info_dict[collection_name] = {
-                    "name": collection_name,
-                    "level": maxCollections,
-                    "collection": formatted_number,
-                    "maxed?": max_tiers,
-                    "max": maxTiers,
-                }
             embed = discord.Embed(
                 title=f"Fishing Collection Breakdown",
-                description=f"**Maxed Collections: {max_tierz}/11**",
+                description=f"**Maxed Collections: {collection_info_dict_data[1]}/11**",
                 color=color,
             )
 
-            for collection_name, collection_data in collection_info_dict.items():
+            for collection_name, collection_data in collection_info_dict_data[0].items():
                 embed.add_field(
                     name=f"",
                     value=f"**{collection_name}** Level: **{collection_data['level']}** / {collection_data['max']} (`{collection_data['collection']}`)",
@@ -935,75 +645,15 @@ class NetworthView2(discord.ui.View):
         elif select.values[0] == "567":
             await interaction.response.defer()
 
-            maxCollections = 0
-            combined_dict = {}
-            collection_name = None
-            data = self.hypixel[1]
+            collection_info_dict_data = collections_data(self.hypixel[1], "RIFT", self.collection_data)
 
-            for members_id, members_data in data["members"].items():
-                try:
-                    members_datas = data["members"][members_id]["collection"].items()
-                except KeyError:
-                    continue
-
-                for item_name, item_value in members_datas:
-                    if item_name in combined_dict:
-                        combined_dict[item_name] += item_value
-                    else:
-                        combined_dict[item_name] = item_value
-
-
-            max_tiers = 0
-            item_valuezz = 0
-            max_tierz = 0
-            maxTiers = 0
-            collection_info_dict = {}
-
-            for name, items in self.collection_data["collections"]["RIFT"]["items"].items():
-                for item_namez, item_valuez in combined_dict.items():
-                    if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_valuez
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-
-                    elif item_namez == name:
-                        tiers_list = items["tiers"]
-                        for tier_data in tiers_list:
-                            if item_valuezz >= tier_data["amountRequired"]:
-                                maxCollections = tier_data["tier"]
-                                maxTiers = items["maxTiers"]
-                                collection_name = items["name"]
-                                if maxCollections == maxTiers:
-                                    max_tierz += 1
-                                    max_tiers = "yes"
-                                else:
-                                    max_tiers = "no"
-                formatted_number = format_TBMK(item_valuezz)
-
-
-                collection_info_dict[collection_name] = {
-                    "name": collection_name,
-                    "level": maxCollections,
-                    "collection": formatted_number,
-                    "maxed?": max_tiers,
-                    "max": maxTiers,
-                }
             embed = discord.Embed(
                 title=f"Rift Collection Breakdown",
-                description=f"**Maxed Collections: {max_tierz}/6**",
+                description=f"**Maxed Collections: {collection_info_dict_data[1]}/6**",
                 color=color,
             )
 
-            for collection_name, collection_data in collection_info_dict.items():
+            for collection_name, collection_data in collection_info_dict_data[0].items():
                 embed.add_field(
                     name=f"",
                     value=f"**{collection_name}** Level: **{collection_data['level']}** / {collection_data['max']} (`{collection_data['collection']}`)",
