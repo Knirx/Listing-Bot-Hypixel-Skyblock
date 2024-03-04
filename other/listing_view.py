@@ -550,9 +550,8 @@ class NetworthView2(discord.ui.View):
 
             for name, items in self.collection_data["collections"]["FARMING"]["items"].items():
                 for item_namez, item_valuez in combined_dict.items():
-                    item_meows = item_valuez
                     if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_meows
+                        item_valuezz = item_valuez
                         tiers_list = items["tiers"]
                         for tier_data in tiers_list:
                             if item_valuezz >= tier_data["amountRequired"]:
@@ -629,9 +628,8 @@ class NetworthView2(discord.ui.View):
             collection_info_dict = {}
             for name, items in self.collection_data["collections"]["MINING"]["items"].items():
                 for item_namez, item_valuez in combined_dict.items():
-                    item_meows = item_valuez
                     if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_meows
+                        item_valuezz = item_valuez
                         tiers_list = items["tiers"]
                         for tier_data in tiers_list:
                             if item_valuezz >= tier_data["amountRequired"]:
@@ -714,9 +712,8 @@ class NetworthView2(discord.ui.View):
 
             for name, items in self.collection_data["collections"]["COMBAT"]["items"].items():
                 for item_namez, item_valuez in combined_dict.items():
-                    item_meows = item_valuez
                     if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_meows
+                        item_valuezz = item_valuez
                         tiers_list = items["tiers"]
                         for tier_data in tiers_list:
                             if item_valuezz >= tier_data["amountRequired"]:
@@ -798,9 +795,8 @@ class NetworthView2(discord.ui.View):
 
             for name, items in self.collection_data["collections"]["FORAGING"]["items"].items():
                 for item_namez, item_valuez in combined_dict.items():
-                    item_meows = item_valuez
                     if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_meows
+                        item_valuezz = item_valuez
                         tiers_list = items["tiers"]
                         for tier_data in tiers_list:
                             if item_valuezz >= tier_data["amountRequired"]:
@@ -881,9 +877,8 @@ class NetworthView2(discord.ui.View):
 
             for name, items in self.collection_data["collections"]["FISHING"]["items"].items():
                 for item_namez, item_valuez in combined_dict.items():
-                    item_meows = item_valuez
                     if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_meows
+                        item_valuezz = item_valuez
                         tiers_list = items["tiers"]
                         for tier_data in tiers_list:
                             if item_valuezz >= tier_data["amountRequired"]:
@@ -966,9 +961,8 @@ class NetworthView2(discord.ui.View):
 
             for name, items in self.collection_data["collections"]["RIFT"]["items"].items():
                 for item_namez, item_valuez in combined_dict.items():
-                    item_meows = item_valuez
                     if item_namez == name and item_valuez >= items["maxTiers"]:
-                        item_valuezz = item_meows
+                        item_valuezz = item_valuez
                         tiers_list = items["tiers"]
                         for tier_data in tiers_list:
                             if item_valuezz >= tier_data["amountRequired"]:
