@@ -44,8 +44,7 @@ async def insert_into_db(uuid, price, channel_id, message_id, author_name, autho
 class profile_listing(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @commands.has_permissions(administrator=True)
+
     @commands.slash_command()
     async def list_profile(self, ctx: discord.ApplicationContext,
                            username: Option(str, f"Enter a username"),

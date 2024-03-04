@@ -74,9 +74,9 @@ class listingButtons(discord.ui.View):
         self.bot = bot
         self.message = message
         self.uuid = uuid
-        self.main_profile = get_main_profile(self.uuid)
-        self.skyhelper = requests.get(f"http://{host}/v1/profiles/{self.uuid}?key={skyhelper_key}").json()["data"][0]
-        self.skyhelper_data = get_networth(self.skyhelper)
+        #self.main_profile = get_main_profile(self.uuid)
+        #self.skyhelper = requests.get(f"http://{host}/v1/profiles/{self.uuid}?key={skyhelper_key}").json()["data"][0]
+        #self.skyhelper_data = get_networth(self.skyhelper)
 
     options = [
         discord.SelectOption(label='Buy', description='Buy the account', emoji='🎫', value='2351'),
@@ -92,12 +92,16 @@ class listingButtons(discord.ui.View):
 
     async def select_data_from_db(self, uuid):
         async with aiosqlite.connect("data/database.db") as db:
-            async with db.execute("SELECT data FROM listing WHERE uuid = ?", (uuid,)) as cursor:
+            async with db.execute("SELECT data, skyhelper_data, hypixel_data FROM listing WHERE uuid = ?", (uuid,)) as cursor:
                 row = await cursor.fetchone()
                 if row:
                     row_0 = row[0]
+                    row_1 = row[1]
+                    row_2 = row[2]
+                    json_load_1 = json.loads(row_1)
                     json_load = json.loads(row_0)
-                    return json_load
+                    json_load_2 = json.loads(row_2)
+                    return [json_load, json_load_1, json_load_2]
                 else:
                     return None
 
@@ -116,7 +120,8 @@ class listingButtons(discord.ui.View):
                                                  view_channel=True)
             await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
             await interaction.response.send_message(f"New channel created at {ticket_channel.mention}", ephemeral=True)
-            data = await self.select_data_from_db(self.uuid)
+            get_data = await self.select_data_from_db(self.uuid)
+            data = get_data[0]
             if data is not None:
                 if data["show_ign"] is True:
                     embed_title = f"Account Information for {data['username']}"
@@ -164,7 +169,7 @@ class listingButtons(discord.ui.View):
                                 value=f"{data['networth']} (Soulbound: {data['soulboundNetworth']}) - Coins: {data['coins']}",
                                 inline=False)
                 embed.add_field(name=f"{emojis_json['hotm']} HOTM",
-                                value=f"{emojis_json['hotmLevel']} HOTM Level: \n{emojis_json['mithrilPowder']} Mithril Powder: {data['mithrilPowder']}\n{emojis_json['gemstonePowder']} Gemstone Powder: {data['gemstonePowder']}",
+                                value=f"{emojis_json['hotmLevel']} HOTM Level: {data['hotmLevel']}\n{emojis_json['mithrilPowder']} Mithril Powder: {data['mithrilPowder']}\n{emojis_json['gemstonePowder']} Gemstone Powder: {data['gemstonePowder']}",
                                 inline=True)
                 embed.add_field(name=f"{emojis_json['crimsonIsle']} Crimson Isle",
                                 value=f"{emojis_json['faction']} Faction: {data['faction']}\n{emojis_json['mageRep']} Mage rep: {data['mages_reputation']}\n{emojis_json['barbRep']} Barbarian rep: {data['barbarians_reputation']}",
@@ -177,11 +182,13 @@ class listingButtons(discord.ui.View):
 
         if select.values[0] == "654":
             await interaction.response.defer()
-
+            data = await self.select_data_from_db(self.uuid)
+            skyhelper = data[1]
+            base_data = data[0]
             net_worth_by_category = {}
             category_items = {}
 
-            for types, help in self.skyhelper["networth"]["types"].items():
+            for types, help in skyhelper["networth"]["types"].items():
                 if types in ["essence", "sacks", "museum", "potion_bag", "fishing_bag", "personal_vault",
                              "candy_inventory"]:
                     continue
@@ -202,7 +209,7 @@ class listingButtons(discord.ui.View):
 
             embed = discord.Embed(
                 title="*Someone's* Networth",
-                description=f"{emojis_json['networthBank']} Networth: **{self.skyhelper_data['networth']}** (Coins: **{self.skyhelper_data['coins']}**) Soulbound: **{self.skyhelper_data['unsoulboundNetworth']}**",
+                description=f"{emojis_json['networthBank']} Networth: **{base_data['networth']}** (Coins: **{base_data['coins']}**) Soulbound: **{base_data['unsoulboundNetworth']}**",
                 color=color,
             )
 
@@ -219,7 +226,9 @@ class listingButtons(discord.ui.View):
             await interaction.followup.send(embed=embed, ephemeral=True, view=self)
 
         if select.values[0] == "231":
-            skills_data = get_skills_overflow(self.main_profile)
+            data = await self.select_data_from_db(self.uuid)
+            hypixel_data = data[2]
+            skills_data = get_skills_overflow(hypixel_data)
             embed = discord.Embed(
                 title="Skill Breakdown:",
                 color=color
@@ -231,6 +240,8 @@ class listingButtons(discord.ui.View):
             await interaction.response.send_message(embed=embed, ephemeral=True, view=self)
 
         if select.values[0] == "213":
+            data = await self.select_data_from_db(self.uuid)
+            dungeon_data = data[2]
             embed = discord.Embed(
                 title="Dungeon Breakdown",
                 color=color
@@ -239,12 +250,12 @@ class listingButtons(discord.ui.View):
             for dg_type in ["catacombs", "master_catacombs"]:
                 for i in range(1, 8):
                     if dg_type == "catacombs":
-                        embed.add_field(name=f"{emojis_json[f'{i}_dungeon_completions']} Floor {i} runs:", value=f'{self.main_profile["dungeons"]["dungeon_types"][f"{dg_type}"]["tier_completions"][f"{i}"]}')
+                        embed.add_field(name=f"{emojis_json[f'{i}_dungeon_completions']} Floor {i} runs:", value=f'{dungeon_data["dungeons"]["dungeon_types"][f"{dg_type}"]["tier_completions"][f"{i}"]}')
                     else:
-                        embed.add_field(name=f"{emojis_json[f'{i}_dungeon_completions']} Master {i} runs:", value=f'{self.main_profile["dungeons"]["dungeon_types"][f"{dg_type}"]["tier_completions"][f"{i}"]}')
+                        embed.add_field(name=f"{emojis_json[f'{i}_dungeon_completions']} Master {i} runs:", value=f'{dungeon_data["dungeons"]["dungeon_types"][f"{dg_type}"]["tier_completions"][f"{i}"]}')
 
             total_levels = 0
-            for klass, exp in self.main_profile["dungeons"]["player_classes"].items():
+            for klass, exp in dungeon_data["dungeons"]["player_classes"].items():
                 level_exp = dungeon_cless_level(exp['experience'])
                 embed.add_field(name=f"{emojis_json[klass]} {klass.capitalize()} Class Level:", value=f"{level_exp}")
                 total_levels += level_exp
@@ -252,22 +263,26 @@ class listingButtons(discord.ui.View):
             await interaction.response.send_message(embed=embed, ephemeral=True, view=self)
 
         if select.values[0] == "312":
+            data = await self.select_data_from_db(self.uuid)
+            hypixel_data = data[2]
             embed = discord.Embed(
                 title="Slayer Breakdown",
                 color=color
             )
 
-            for slayer_key, slayer_value in self.main_profile["slayer"]["slayer_bosses"].items():
+            for slayer_key, slayer_value in hypixel_data["slayer"]["slayer_bosses"].items():
                 embed.add_field(name=f"{emojis_json[slayer_key]} {slayer_key.capitalize()} Slayer:", value=f"{get_slayer_lvl_with_overflow_exp(slayer_key, slayer_value['xp'])}")
             await interaction.response.send_message(embed=embed, ephemeral=True, view=self)
 
         if select.values[0] == "4123":
+            data = await self.select_data_from_db(self.uuid)
+            hypixel_data = data[2]
             embed = discord.Embed(
                 title="Crimson Isle Breakdown",
                 color=color
             )
 
-            for kuudra_key, kuudra_value in self.main_profile["nether_island_player_data"]["kuudra_completed_tiers"].items():
+            for kuudra_key, kuudra_value in hypixel_data["nether_island_player_data"]["kuudra_completed_tiers"].items():
                 if "_" in kuudra_key:
                     continue
                 if kuudra_key == "none":
@@ -275,7 +290,7 @@ class listingButtons(discord.ui.View):
                 else:
                     embed.add_field(name=f"{emojis_json[kuudra_key]} {kuudra_key.capitalize()} Kuudra Completions:", value=f"{kuudra_value}")
 
-            for dojo_key, dojo_value in self.main_profile["nether_island_player_data"]["dojo"].items():
+            for dojo_key, dojo_value in hypixel_data["nether_island_player_data"]["dojo"].items():
                 if "time" in dojo_key:
                     continue
                 embed.add_field(name=f"{emojis_json[dojo_key]} {dojo_key.replace('dojo_points_', '').replace('_', ' ').capitalize()}", value=f"{dojo_value}")

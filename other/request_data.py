@@ -191,14 +191,17 @@ def get_kuudra(data):
     return kuudra_dict
 
 
-def get_all(username,  uuid):
-    skyhelper_data = get_skyhelper_data(username)
+def get_all(username, uuid):
     if uuid:
         main_profile = get_main_profile(uuid)
+        skyhelper_data = get_skyhelper_data(uuid)
+        skyhelper_request = get_skyhelper_data_only(uuid)
     else:
         uuid = get_uuid(username)
         if uuid is None:
             return None
+        skyhelper_data = get_skyhelper_data(uuid)
+        skyhelper_request = get_skyhelper_data_only(uuid)
         main_profile = get_main_profile(uuid)
     for skill_key, skill_value in get_skills(main_profile).items():
         gather_all_dict[skill_key] = skill_value
@@ -211,4 +214,4 @@ def get_all(username,  uuid):
         gather_all_dict[mining_key] = mining_value
     for kuudra_key, kuudra_value in get_kuudra(main_profile).items():
         gather_all_dict[kuudra_key] = kuudra_value
-    return gather_all_dict
+    return [gather_all_dict, skyhelper_request, main_profile]

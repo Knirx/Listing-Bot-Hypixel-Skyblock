@@ -19,7 +19,7 @@ class Stats(commands.Cog):
     @commands.slash_command()
     async def stats(self, ctx: discord.ApplicationContext, username: Option(str, "Enter your IGN")):
         await ctx.defer()
-        data = get_all(username, False)
+        data = get_all(username, False)[0]
         embed = discord.Embed(
             title=f"Account Information for {data['username']}",
             description="",

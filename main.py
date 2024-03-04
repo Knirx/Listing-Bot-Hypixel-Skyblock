@@ -26,7 +26,9 @@ async def database_stuff():
                 message_id INTEGER,
                 author_name STRING,
                 author_id INTEGER,
-                data TEXT
+                data TEXT,
+                skyhelper_data TEXT,
+                hypixel_data TEXT
                 );""")
         await db.execute("""
             CREATE TABLE IF NOT EXISTS profile_listing (

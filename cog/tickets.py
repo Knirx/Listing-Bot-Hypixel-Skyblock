@@ -1,4 +1,4 @@
-import discord, json, os, io, chat_exporter, asyncio
+import discord, json, PIL, easy_pil, os, io, chat_exporter, requests, aiosqlite
 from other.request_data import *
 from other.calcs import *
 from discord import Option, slash_command
@@ -189,7 +189,7 @@ class AccountTickets(discord.ui.Modal):
         payment_methods = self.children[2].value
 
         await interaction.response.defer()
-        data = get_all(username, False)
+        data = get_all(username, False)[0]
         ticket_channel = await interaction.guild.create_text_channel(f'sell-${price}-{username}',
                                                                      category=discord.utils.get(interaction.guild.categories, id=sell_acc_category))
         await ticket_channel.set_permissions(interaction.user, send_messages=True, read_messages=True,
@@ -251,12 +251,12 @@ class TicketsView(discord.ui.View):
     options = [
         discord.SelectOption(label='Sell Account', description='Click here to sell an account!', emoji='🎫', value='1'),
         discord.SelectOption(label='Sell Coins', description='Click here to sell coins or items!',
-                             emoji=f'{emojis_json["tickets_sell"]}', value='2'),
+                             emoji='<:coin:1140349985469255771>', value='2'),
         discord.SelectOption(label='Buy Coins', description='Click here to buy coins or items!',
-                             emoji=f'{emojis_json["tickets_buy"]}', value='3'),
+                             emoji='<:dollar:1140350441255862416>', value='3'),
         discord.SelectOption(label='Support | Exchange | Middleman',
                              description='Click here for support, exchanges or Middleman!',
-                             emoji=f'{emojis_json["tickets_support"]}', value='4')
+                             emoji='<:support:1139671363406286869>', value='4')
     ]
 
     @discord.ui.select(
