@@ -122,7 +122,7 @@ async def update_listing_view():
 @bot.event
 async def on_ready():
     bot.add_view(ticket_delete_button(bot))
-    bot.add_view(TicketsView())
+    bot.add_view(TicketsView(bot))
     await database_stuff()
     await update_listing_view()
     await update_profile_listing_view()
